@@ -4,9 +4,9 @@ const defaultBaseCurrency = "USD";
 const defaultTargetCurrency = "BRL";
 
 const baseCurrency = document.querySelector('[data-js="currency-one"]');
-const targetCurrency = document.querySelector('[data-js="currency-two"]');
 
-const getEndpointURL = () => `${baseURL}${APIKey}/latest/BRL`;
+const targetCurrency = document.querySelector('[data-js="currency-two"]');
+const amountCurrency = document.querySelector('[data-js="currency-one-times"]');
 
 const fetchData = async (url) => {
     try {
@@ -20,11 +20,50 @@ const fetchData = async (url) => {
     }
 };
 
+const getEndpointURL = () => `${baseURL}${APIKey}/latest/BRL`;
+
 const getExchangeData = () => fetchData(getEndpointURL());
 
 const exchangeConversionData = async () => {
     const { conversion_rates } = await getExchangeData();
-    console.log(conversion_rates);
+    const converted = Object.entries(conversion_rates);
+    addDataIntoSelect(converted, defaultBaseCurrency, baseCurrency);
+    addDataIntoSelect(converted, defaultTargetCurrency, targetCurrency);
+};
+
+const addDataIntoSelect = (codes, codeDefault, element) => {
+    codes.reduce((acc, code) => {
+        acc =
+            code[0] === `${codeDefault}`
+                ? `<option selected value='${code[0]}'>${code[0]}</option>`
+                : `<option value='${code[0]}'>${code[0]}</option>`;
+        // console.log(acc);
+        element.insertAdjacentHTML("afterbegin", acc);
+
+        return;
+    }, "");
 };
 
 exchangeConversionData();
+
+const getExchangeDataTeste = (base, target, amount) =>
+    `${baseURL}${APIKey}/pair/${base}/${target}/${amount}`;
+
+const getExchangePair = (base, target, amount) =>
+    fetchData(getExchangeDataTeste(base, target, amount));
+
+baseCurrency.addEventListener("change", () => {
+    const baseCodeValue = baseCurrency.value;
+    console.log(baseCodeValue);
+    // const targeCodeValue = targetCurrency.value;
+    const targeCodeValue = "BRL";
+    const amount = amountCurrency.value;
+    console.log(amount);
+    getExchangePair(baseCodeValue, targeCodeValue, amount);
+    // const teste = getExchangePair(baseCodeValue, targeCodeValue, amount);
+    // console.log(teste);
+});
+
+targetCurrency.addEventListener("change", () => {
+    console.log(baseCurrency.value);
+});
