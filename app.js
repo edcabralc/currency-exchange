@@ -1,1 +1,2 @@
-console.log("olá meu parceiro, você é foda");
+const APIKey = "";
+const baseURL = "";
