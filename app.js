@@ -61,6 +61,13 @@ const convertCurrencie = async (base, target, amount) => {
         target,
         amount
     );
+
+    if (amount === 0) {
+        convertedValue.textContent = "Não é possivel converter";
+        conversionPrecision.textContent = "Não é possivel converter";
+        return;
+    }
+
     convertedValue.textContent = conversion_result;
     conversionPrecision.textContent = conversion_result.toFixed(2);
 };
