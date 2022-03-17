@@ -24,8 +24,12 @@ const fetchData = async (url) => {
 };
 
 const getCurrenciesCodesURL = () => `${baseURL}${APIKey}/codes`;
+const getExchangeCoversionURL = (base, target, amount) =>
+    `${baseURL}${APIKey}/pair/${base}/${target}/${amount}`;
 
 const getCurrenciesCodes = () => fetchData(getCurrenciesCodesURL());
+const getExchangeCoversion = (base, target, amount) =>
+    fetchData(getExchangeCoversionURL(base, target, amount));
 
 const getSupportedCodes = async () => {
     const { supported_codes } = await getCurrenciesCodes();
@@ -47,14 +51,6 @@ const addDataIntoSelect = (currencyCodes, codeDefault, elementToInsert) => {
     }, "");
 };
 
-getSupportedCodes();
-
-const getExchangeCoversionURL = (base, target, amount) =>
-    `${baseURL}${APIKey}/pair/${base}/${target}/${amount}`;
-
-const getExchangeCoversion = (base, target, amount) =>
-    fetchData(getExchangeCoversionURL(base, target, amount));
-
 const convertCurrencie = async (base, target, amount) => {
     const { conversion_result } = await getExchangeCoversion(
         base,
@@ -62,16 +58,11 @@ const convertCurrencie = async (base, target, amount) => {
         amount
     );
 
-    if (amount === 0) {
-        convertedValue.textContent = "Não é possivel converter";
-        conversionPrecision.textContent = "Não é possivel converter";
-        return;
-    }
-
     convertedValue.textContent = conversion_result;
     conversionPrecision.textContent = conversion_result.toFixed(2);
 };
 
+getSupportedCodes();
 convertCurrencie(defaultBaseCurrency, defaultTargetCurrency, (amount = 1));
 
 baseCurrency.addEventListener("change", () => {
