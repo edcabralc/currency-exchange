@@ -34,11 +34,11 @@ const getExchangeCoversion = (base, target, amount) =>
 const getSupportedCodes = async () => {
     const { supported_codes } = await getCurrenciesCodes();
 
-    addDataIntoSelect(supported_codes, defaultBaseCurrency, baseCurrency);
-    addDataIntoSelect(supported_codes, defaultTargetCurrency, targetCurrency);
+    createOptionValues(supported_codes, defaultBaseCurrency, baseCurrency);
+    createOptionValues(supported_codes, defaultTargetCurrency, targetCurrency);
 };
 
-const addDataIntoSelect = (currencyCodes, codeDefault, elementToInsert) => {
+const createOptionValues = (currencyCodes, codeDefault, elementToInsert) => {
     currencyCodes.reduce((acc, code) => {
         acc =
             code[0] === `${codeDefault}`
@@ -58,33 +58,21 @@ const convertCurrencie = async (base, target, amount) => {
         amount
     );
 
-    convertedValue.textContent = conversion_result;
-    conversionPrecision.textContent = conversion_result.toFixed(2);
+    conversionPrecision.textContent = conversion_result;
+    convertedValue.textContent = conversion_result.toFixed(2);
+};
+
+const changeValueCurrencies = () => {
+    const baseCodeValue = baseCurrency.value;
+    const targeCodeValue = targetCurrency.value;
+    const amount = amountCurrency.value;
+
+    convertCurrencie(baseCodeValue, targeCodeValue, amount);
 };
 
 getSupportedCodes();
 convertCurrencie(defaultBaseCurrency, defaultTargetCurrency, (amount = 1));
 
-baseCurrency.addEventListener("change", () => {
-    const baseCodeValue = baseCurrency.value;
-    const targeCodeValue = targetCurrency.value;
-    const amount = amountCurrency.value;
-
-    convertCurrencie(baseCodeValue, targeCodeValue, amount);
-});
-
-targetCurrency.addEventListener("change", () => {
-    const baseCodeValue = baseCurrency.value;
-    const targeCodeValue = targetCurrency.value;
-    const amount = amountCurrency.value;
-
-    convertCurrencie(baseCodeValue, targeCodeValue, amount);
-});
-
-amountCurrency.addEventListener("change", () => {
-    const baseCodeValue = baseCurrency.value;
-    const targeCodeValue = targetCurrency.value;
-    const amount = amountCurrency.value;
-
-    convertCurrencie(baseCodeValue, targeCodeValue, amount);
-});
+baseCurrency.addEventListener("change", changeValueCurrencies);
+targetCurrency.addEventListener("change", changeValueCurrencies);
+amountCurrency.addEventListener("change", changeValueCurrencies);
